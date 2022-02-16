@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import Header from './components/Header';
 import Card from './components/Card/Card';
 import Dawer from './components/Dawer';
@@ -11,11 +12,14 @@ const arr = [
 
 
 function App() {
+
+  const [cartOpened, setCartOpened] = useState(false);
+
   return (
     <div className="wrapper clear">
-      
-    <Dawer/>
-    <Header/>
+      {cartOpened ?  <Dawer onClose={() => setCartOpened(false)}/> : null}
+    
+    <Header onClickCart={() => setCartOpened(true)} />
 
       <div className="content p-40 ">
         <div className="d-flex align-center mb-40 justify-between">
