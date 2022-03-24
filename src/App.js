@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Header from './components/Header';
 import Home from './pages/Home';
+import Favorites from './pages/Favorites';
 import Dawer from './components/Dawer';
 
 
@@ -24,6 +25,10 @@ function App() {
       axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/cart').then((res) =>(
         setCartItems(res.data)
       ));
+      axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites').then((res) =>(
+        setFavorites(res.data)
+      ));
+      
   }, []);
 
 
@@ -44,9 +49,15 @@ function App() {
     setSearchValue(event.target.value);
   }
 
-  const onAddToFavorite = (obj) =>{
-    axios.post('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites', obj);
-    setFavorites(prev => [...prev, obj])
+  const onAddToFavorite = async (obj) =>{
+    if(favorites.find(favObj => favObj.id === obj.id)){
+      axios.delete(`https://620e05f3585fbc3359d41fe5.mockapi.io/favorites/${obj.id}`);
+      //setFavorites(prev => prev.filter(item => item.id !== obj.id))
+    } else{
+      const {data} = await axios.post('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites', obj);
+    setFavorites(prev => [...prev, data])
+    }
+    
   }
   
   
@@ -66,6 +77,9 @@ function App() {
           onAddToCart={onAddToCart}
         />}
       />
+      <Route path="/favorites" exact element = {
+        <Favorites items={favorites} onAddToFavorite={onAddToFavorite} />}
+        />
      </Routes>
 
       
