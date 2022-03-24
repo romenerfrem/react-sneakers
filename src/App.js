@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import axios from 'axios';
 import Header from './components/Header';
-import Card from './components/Card/Card';
+import Home from './pages/Home';
 import Dawer from './components/Dawer';
 
 
@@ -13,6 +14,7 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [cartOpened, setCartOpened] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
 
   useEffect(()=>{
@@ -41,6 +43,11 @@ function App() {
   const onChangeSearchInput = (event) => {
     setSearchValue(event.target.value);
   }
+
+  const onAddToFavorite = (obj) =>{
+    axios.post('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites', obj);
+    setFavorites(prev => [...prev, obj])
+  }
   
   
   return (
@@ -48,33 +55,20 @@ function App() {
       {cartOpened ?  <Dawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem}/> : null}
     
     <Header onClickCart={() => setCartOpened(true)} />
+     <Routes>
+      <Route path="/" exact element = {
+        <Home
+          items={items}
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          onChangeSearchInput={onChangeSearchInput}
+          onAddToFavorite={onAddToFavorite}
+          onAddToCart={onAddToCart}
+        />}
+      />
+     </Routes>
 
-      <div className="content p-40 ">
-        <div className="d-flex align-center mb-40 justify-between">
-          <h1>{searchValue ? `Поиск по запросу: "${searchValue}"` : 'Все кроссовки' }</h1>
-          <div className="search-block d-flex">
-            <img src="/img/search.svg" alt="Search" />
-            {searchValue && <img onClick={()=>setSearchValue('')} className='clear cu-p' src="/img/btn-remove.svg" alt="Close" />}
-            <input onChange={onChangeSearchInput} value={searchValue} placeholder="Поиск..." />
-          </div>
-        </div>
-        <div className="d-flex flex-wrap">
-          {items
-          //.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
-          .map((item, index)=>(
-            <Card
-              key = {index}
-              title = {item.name}
-              price = {item.price}
-              imageUrl = {item.imageUrl}
-              onFavorite = {() => console.log('Дабавили в закладки')}
-              onPlus = {(obj) => onAddToCart(obj)}
-            
-            /> 
-           ))}
-          
-        </div> 
-       </div>
+      
 
 
     </div>
