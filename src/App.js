@@ -5,8 +5,7 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import Dawer from './components/Dawer';
-
-
+import AppContext from './context';
 
 
 function App() {
@@ -78,8 +77,13 @@ function App() {
     
   }
   
-  
+  const isItemAdded = (id) => {
+    return cartItems.some((obj) => Number(obj.id) === Number(id));
+  }
+
+
   return (
+    <AppContext.Provider value = {{items, cartItems, favorites, isItemAdded}}>
     <div className="wrapper clear">
       {cartOpened ?  <Dawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem}/> : null}
     
@@ -106,6 +110,7 @@ function App() {
 
 
     </div>
+    </AppContext.Provider>
   );
 }
 
