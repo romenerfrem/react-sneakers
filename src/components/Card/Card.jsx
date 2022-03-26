@@ -6,11 +6,10 @@ const Card = ({
     id,
     onFavorite,
     imageUrl,
-    title,
+    name,
     price,
     onPlus,
     favorited=false,
-    added = false,
     loading = false
   }) => {
 
@@ -18,10 +17,10 @@ const Card = ({
   const [isFavorite, setIsFavorite] = useState(favorited);
   
   const onClickPlus = () => {
-    onPlus({id, title, imageUrl, price});
+    onPlus({id, name, imageUrl, price});
   }
   const onClickFavorite = () => {
-    onFavorite({id, title, imageUrl, price});
+    onFavorite({id, name, imageUrl, price});
     setIsFavorite(!isFavorite);
   }
   
@@ -53,7 +52,7 @@ const Card = ({
             />
           </div>
           <img width={133} height={112} src={imageUrl} alt="Sneakers" />
-          <h5>{title}</h5>
+          <h5>{name}</h5>
           <div className="d-flex justify-between align-center">
             <div className="d-flex flex-column">
               <span>Цена:</span>
@@ -65,6 +64,7 @@ const Card = ({
               src={isItemAdded(id) ? "/img/btn-checked.svg" :"/img/btn-plus.svg"} 
               alt="plus" 
             />
+            
           </div>
           
           </>

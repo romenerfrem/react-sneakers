@@ -66,7 +66,7 @@ function App() {
     try {
       if(favorites.find(favObj => favObj.id === obj.id)){
         axios.delete(`https://620e05f3585fbc3359d41fe5.mockapi.io/favorites/${obj.id}`);
-        //setFavorites(prev => prev.filter(item => item.id !== obj.id))
+        setFavorites(prev => prev.filter(item => item.id !== obj.id));
       } else{
         const {data} = await axios.post('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites', obj);
       setFavorites(prev => [...prev, data])
@@ -83,7 +83,7 @@ function App() {
 
 
   return (
-    <AppContext.Provider value = {{items, cartItems, favorites, isItemAdded}}>
+    <AppContext.Provider value = {{items, cartItems, favorites, isItemAdded, setCartOpened, setCartItems}}>
     <div className="wrapper clear">
       {cartOpened ?  <Dawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem}/> : null}
     
