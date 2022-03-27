@@ -4,7 +4,8 @@ import axios from 'axios';
 import Header from './components/Header';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
-import Dawer from './components/Dawer';
+import Orders from './pages/Orders';
+import Dawer from './components/Drawer/Dawer';
 import AppContext from './context';
 
 
@@ -18,18 +19,25 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(()=>{
-
       async function fetchData(){
+      try {
+        const [cardsResponse, favoritesResponse, itemsResponse] = await Promise.all([
+          axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/cart'),
+          axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites'),
+          axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/items'),
+        ]);
 
-        const cardsResponse = await axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/cart');
-        const favoritesResponse = await axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/favorites');
-        const itemsResponse = await axios.get('https://620e05f3585fbc3359d41fe5.mockapi.io/items');
-        setIsLoading(false);
-        setCartItems(cardsResponse.data);
-        setFavorites(favoritesResponse.data);
-        setItems(itemsResponse.data);
+         
+          setIsLoading(false);
+          setCartItems(cardsResponse.data);
+          setFavorites(favoritesResponse.data);
+          setItems(itemsResponse.data);
+        
+      } catch (error) {
+        alert('Ошибка при запросе данных');
       }
-
+      
+    }
       fetchData();
   }, []);
 
@@ -83,9 +91,24 @@ function App() {
 
 
   return (
-    <AppContext.Provider value = {{items, cartItems, favorites, isItemAdded, setCartOpened, setCartItems}}>
+    <AppContext.Provider value = {{
+      items,
+      cartItems, 
+      favorites, 
+      isItemAdded, 
+      setCartOpened, 
+      setCartItems,
+      onAddToFavorite,
+      onAddToCart
+      }}>
     <div className="wrapper clear">
-      {cartOpened ?  <Dawer items={cartItems} onClose={() => setCartOpened(false)} onRemove={onRemoveItem}/> : null}
+       
+    <Dawer
+      items={cartItems}
+      onClose={() => setCartOpened(false)}
+      onRemove={onRemoveItem}
+      opened={cartOpened}
+    />
     
     <Header onClickCart={() => setCartOpened(true)} />
      <Routes>
@@ -103,6 +126,10 @@ function App() {
       />
       <Route path="/favorites" exact element = {
         <Favorites items={favorites} onAddToFavorite={onAddToFavorite} />}
+        />
+    
+     <Route path="/orders" exact element = {
+        <Orders/>}
         />
      </Routes>
 
